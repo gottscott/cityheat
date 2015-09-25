@@ -128,7 +128,7 @@ def timeseriesplots(tempDF,meta, sorttype, sorttype2=0, option2=0):
         plt.show()
 
 def mapmean(tempDF, meta, name = ''): 
-    fig  = plt.figure(figsize=(30, 30))
+    #fig  = plt.figure(figsize=(30, 30))
     x = meta['location:Longitude'].values
     y = meta['location:Latitude'].values
     c = tempDF.mean(axis=0).values # The colors will show the mean temp at that location
@@ -136,10 +136,10 @@ def mapmean(tempDF, meta, name = ''):
     fig = plt.figure(figsize=(10,10))
     ax = fig.add_axes([0.1,0.1,0.8,0.8])
 
-    m = Basemap(llcrnrlon=meta['location:Longitude'].min()-.0005,
-                llcrnrlat=meta['location:Latitude'].min()-.0005,
-                urcrnrlon=meta['location:Longitude'].max()+.0005,
-                urcrnrlat=meta['location:Latitude'].max()+.0005,
+    m = Basemap(llcrnrlon=meta['location:Longitude'].min()-.005,
+                llcrnrlat=meta['location:Latitude'].min()-.005,
+                urcrnrlon=meta['location:Longitude'].max()+.005,
+                urcrnrlat=meta['location:Latitude'].max()+.005,
                 projection='mill',
                 #projection = 'merc',
                 resolution ='h',
