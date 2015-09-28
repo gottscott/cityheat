@@ -14,7 +14,7 @@ pd.options.display.mpl_style = 'default'
 get_ipython().magic(u'matplotlib inline')
 
 def importdata(files,meta) : 
-#	meta = pd.DataFrame(pd.read_csv(metafile), sep = ',')
+#	meta = pd.DataFrame(pd.read_csv(metafile, sep = ','))
 	meta = meta.set_index(meta['sensornumber']) # set the row names for metadata to be the sensor number
 	date_spec = {'Date': [ 0]}
 
