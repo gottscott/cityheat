@@ -13,23 +13,24 @@ from mpl_toolkits.basemap import Basemap
 
 def histPlot(tempDF, title='Histogram of Temperature'): 
     fig  = plt.figure(figsize=(12, 6))
-    n, bins, patches = plt.hist(tempDF.values[:].reshape([tempDF.shape[0]*tempDF.shape[1]]),20)
+    data = tempDF.values[~np.isnan(tempDF.values)] 
+    n, bins, patches = plt.hist(data,20)
     #    n, bins, patches = plt.hist(tempDF.values[:].reshape([tempDF.shape[0]*tempDF.shape[1]]),10) # plots each sensor as a separate bar
-    plt.axvline(tempDF.values.mean(), 
+    plt.axvline(data.mean(), 
                 linestyle='dashed', 
                 color = pd.tools.plotting._get_standard_colors(3)[2], 
                 linewidth=2, 
                 label = 'mean, %2.1f $^\circ$ C'%tempDF.values.mean(),
                 alpha = 1.0)
 
-    plt.axvline(tempDF.values.std()+tempDF.values.mean(), 
+    plt.axvline(data.std()+data.mean(), 
                 color = pd.tools.plotting._get_standard_colors(3)[1], 
                 linestyle='dashed', 
                 linewidth=2, 
                 label = '$\pm \sigma$, %2.1f $^\circ$ C'%tempDF.values.std()
                 )
 
-    plt.axvline(tempDF.values.mean()-tempDF.values.std(), 
+    plt.axvline(data.mean()-data.std(), 
                 color = pd.tools.plotting._get_standard_colors(3)[1], 
                 linestyle='dashed', 
                 linewidth=2, 
@@ -67,7 +68,7 @@ def timeseriesplots(tempDF,meta, sorttype, sorttype2=0, option2=0):
             epsg=3857
             )
         wms_server = "http://osm.woc.noaa.gov/mapcache" 
-        m.wmsimage(wms_server, layers = ["osm"], verbose = False)
+        #m.wmsimage(wms_server, layers = ["osm"], verbose = False)
         # loop over every curve to draw 
         i = 0
 
@@ -87,7 +88,7 @@ def timeseriesplots(tempDF,meta, sorttype, sorttype2=0, option2=0):
             if index.shape[0] >0 :
                 lab = '%s, %s/%s sensors (%2.1f %%)'%(option, index.shape[0], meta.sensornumber.shape[0], index.shape[0]/float(meta.sensornumber.shape[0])*100 )                
                 plt.subplot(1,2,1)
-                tempDF[index].mean(axis=1).plot(linewidth = 3, label = lab)
+                plt.plot(tempDF.index, tempDF[index].mean(axis=1), linewidth = 3, label = lab)
                 
                 plt.subplot(1,2,2)
                 #print 'now plotting map for %s'%option
@@ -113,7 +114,7 @@ def timeseriesplots(tempDF,meta, sorttype, sorttype2=0, option2=0):
         lgd = plt.legend()#bbox_to_anchor = (.5, -.28),
                     #loc=8,
                    #borderaxespad=0.)
-        plt.ylim([-12,12])
+        plt.ylim([-6,6])
         matplotlib.rcParams.update({'font.size': 22})
         
         plt.subplot(1,2,2)
@@ -147,7 +148,7 @@ def mapmean(tempDF, meta, name = ''):
                 epsg=3857
                 )
     wms_server = "http://osm.woc.noaa.gov/mapcache" 
-    m.wmsimage(wms_server, layers = ["osm"], verbose = False)
+    #m.wmsimage(wms_server, layers = ["osm"], verbose = False)
     
     #define the color map 
     cmap = matplotlib.cm.RdBu_r
@@ -235,7 +236,7 @@ def diurnalplots(diurnalDF, meta, sorttype, sorttype2=0, option2=0):
             epsg=3857
             )
         wms_server = "http://osm.woc.noaa.gov/mapcache" 
-        m.wmsimage(wms_server, layers = ["osm"], verbose = False)
+        #m.wmsimage(wms_server, layers = ["osm"], verbose = False)
         # loop over every curve to draw 
         i = 0
         for option in options[sorttype]:
@@ -323,7 +324,7 @@ def diurnalplotsgeneral(diurnalDF,meta, parks, filename):
             epsg=3857
             )
         wms_server = "http://osm.woc.noaa.gov/mapcache" 
-        m.wmsimage(wms_server, layers = ["osm"], verbose = False)
+        #m.wmsimage(wms_server, layers = ["osm"], verbose = False)
         # loop over every curve to draw 
         i = 0
         for key in parks.keys():
