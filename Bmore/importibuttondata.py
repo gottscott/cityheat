@@ -33,11 +33,24 @@ def importdata(files,meta) :
 	sensornumbers = []
 	for file in files:
 	    try : 
-		frames.append(pd.read_csv(file, sep = ',', skiprows = 19, parse_dates = date_spec, keep_date_col=True).set_index('Date').rename(columns = {'Value': int(os.path.splitext(os.path.basename(file))[0][0:-1])}))
+		colnumber = int(os.path.splitext(os.path.basename(file))[0][0:-1])
+		frame = pd.read_csv(file, sep = ',', 
+            		skiprows = 19, 
+            		parse_dates = date_spec, 
+            		keep_date_col=True)
+		frame = frame.set_index('Date').rename(columns = {'Value': colnumber})
+	
+		startdate = pd.to_datetime(meta['time'][colnumber]) #when the sensor was installed according to metadata
+		ind = np.argmin(abs(frame.index -startdate)) # Find the closest recording time to when put out
+		frames.append(frame[ind+1:]) # only save the data from the hour after the sensor was installed	
+		#frames.append(frame)
+		#frames.append(pd.read_csv(file, sep = ',', skiprows = 19, parse_dates = date_spec, keep_date_col=True).set_index('Date').rename(columns = {'Value': int(os.path.splitext(os.path.basename(file))[0][0:-1])}))
+	    	
 	    except ValueError: 
 		print "oops... something went wrong"
-	    
-	tempDF = pd.concat(frames, axis =1).resample('H').dropna()
+	   
+	tempDF = pd.concat(frames, axis =1).resample('H')
+	#tempDF = pd.concat(frames, axis =1).resample('H').dropna()
 	meta = meta.loc[np.intersect1d(tempDF.columns.values, meta.sensornumber.values)]
 
 	clim = tempDF.mean(axis=1) # the temperature 'climatology'
