@@ -14,20 +14,20 @@ from mpl_toolkits.basemap import Basemap
 def histPlot(tempDF, title='Histogram of Temperature'): 
     fig  = plt.figure(figsize=(12, 6))
     data = tempDF.values[~np.isnan(tempDF.values)] 
-    n, bins, patches = plt.hist(data,20)
+    n,bins, patches= plt.hist(data,20)
     #    n, bins, patches = plt.hist(tempDF.values[:].reshape([tempDF.shape[0]*tempDF.shape[1]]),10) # plots each sensor as a separate bar
     plt.axvline(data.mean(), 
                 linestyle='dashed', 
                 color = pd.tools.plotting._get_standard_colors(3)[2], 
                 linewidth=2, 
-                label = 'mean, %2.1f $^\circ$ C'%tempDF.values.mean(),
+                label = 'mean, %2.1f $^\circ$ C'%np.nanmean(data),
                 alpha = 1.0)
 
     plt.axvline(data.std()+data.mean(), 
                 color = pd.tools.plotting._get_standard_colors(3)[1], 
                 linestyle='dashed', 
                 linewidth=2, 
-                label = '$\pm \sigma$, %2.1f $^\circ$ C'%tempDF.values.std()
+                label = '$\pm \sigma$, %2.1f $^\circ$ C'%np.nanstd(data)
                 )
 
     plt.axvline(data.mean()-data.std(), 
@@ -41,6 +41,7 @@ def histPlot(tempDF, title='Histogram of Temperature'):
     plt.title(title)
     filename = './plots/histogram' + title.replace(" ", "") + ".eps"
     plt.savefig(filename, format = 'eps', dpi = 600, )
+    return  n, bins
 
 # function draws plots of diurnal data given a pandas dataframe that has an 'hour' column added to it 
 # with optional 2nd category to sort by 
@@ -224,6 +225,7 @@ def diurnalplots(diurnalDF, meta, sorttype, sorttype2=0, option2=0):
 
         fig  = plt.figure(figsize=(30, 12))
         plt.subplot(1,2,2)
+        matplotlib.rcParams.update({'font.size': 22})
         
         m = Basemap(llcrnrlon=meta['location:Longitude'].min()-.005,
             llcrnrlat=meta['location:Latitude'].min()-.0005,
@@ -298,7 +300,7 @@ def diurnalplots(diurnalDF, meta, sorttype, sorttype2=0, option2=0):
                    bbox_to_anchor = (.5, -.28),
                     loc=8,
                    borderaxespad=0.)        
-        matplotlib.rcParams.update({'font.size': 22})
+        #matplotlib.rcParams.update({'font.size': 22})
         filename = './plots/diurnal%s%s%s.eps'%(sorttype,sorttype2, option2)
         plt.savefig(filename, format = 'eps', dpi = 600, 
                     bbox_extra_artists=(lgd,), bbox_inches='tight')
