@@ -128,12 +128,11 @@ def timeseriesplots(tempDF,meta, sorttype, sorttype2=0, option2=0):
         plt.savefig(filename, format = 'eps', dpi = 600, 
                     bbox_extra_artists=(lgd,), bbox_inches='tight')
         plt.show()
-
-def mapmean(tempDF, meta, name = ''): 
+def mapmean(tempDF, meta, name = '', anomaly= ''):
     #fig  = plt.figure(figsize=(30, 30))
     x = meta['location:Longitude'].values
     y = meta['location:Latitude'].values
-    c = tempDF.mean(axis=0).values # The colors will show the mean temp at that location
+    c = tempDF.mean(axis=0)#.values # The colors will show the mean temp at that location
     marker_size = 150
     fig = plt.figure(figsize=(10,10))
     ax = fig.add_axes([0.1,0.1,0.8,0.8])
@@ -143,77 +142,81 @@ def mapmean(tempDF, meta, name = ''):
                 urcrnrlon=meta['location:Longitude'].max()+.005,
                 urcrnrlat=meta['location:Latitude'].max()+.005,
                 projection='mill',
-                #projection = 'merc',
                 resolution ='h',
-                #area_thresh=1000.
                 epsg=3857
                 )
-    wms_server = "http://osm.woc.noaa.gov/mapcache" 
+    wms_server = "http://osm.woc.noaa.gov/mapcache"
     #m.wmsimage(wms_server, layers = ["osm"], verbose = False)
-    
-    #define the color map 
+
+    #define the color map
     cmap = matplotlib.cm.RdBu_r
-    bounds = np.linspace(round((c.mean()-3)*9/5.+32),round((c.mean()+3)*9/5.+32),13)
+    if anomaly == '': 
+        bounds = np.linspace(round((c.mean()-3)*9/5.+32),round((c.mean()+3)*9/5.+32),13)
+    else : 
+        bounds = np.linspace(round((-3)*9/5.),round((3)*9/5.),13)
     norm = matplotlib.colors.BoundaryNorm(bounds, cmap.N)
-    
+
     fahr = m.scatter(x,y, s = marker_size, c =(c*9./5. + 32.),
-                     cmap = cmap, 
-                     norm = norm, 
-                     #cmap = matplotlib.cm.RdBu_r, 
-                        latlon = True, 
-                        lw = 2, 
-                        edgecolor = 'gray', 
-                        #vmin = (c.mean()-3)*9/5., 
+                     cmap = cmap,
+                     norm = norm,
+                     #cmap = matplotlib.cm.RdBu_r,
+                        latlon = True,
+                        lw = 2,
+                        edgecolor = 'gray',
+                        #vmin = (c.mean()-3)*9/5.,
                         #vmax = (c.mean()+3)*9/5.,
                         )
-    cmap = matplotlib.cm.RdBu_r
-    bounds = np.linspace(round(c.mean())-3,round(c.mean())+3,13)
-    norm = matplotlib.colors.BoundaryNorm(bounds, cmap.N)
     
-    celsius = m.scatter(x,y, s = marker_size, 
-                        c = c, 
-                        cmap = cmap, 
+    cmap = matplotlib.cm.RdBu_r
+    if anomaly == '': 
+        bounds = np.linspace(round(c.mean())-3,round(c.mean())+3,13)
+    else : 
+        bounds = np.linspace(-3,3,13)
+    norm = matplotlib.colors.BoundaryNorm(bounds, cmap.N)
+    celsius = m.scatter(x,y, s = marker_size,
+                        c = c,
+                        cmap = cmap,
                         norm = norm,
-                        #cmap = matplotlib.cm.RdBu_r, 
-                        latlon = True, 
-                        lw = 2, 
-                        edgecolor = 'gray', 
-                        vmin = c.mean()-3, 
-                        vmax = c.mean()+3,
+                        #cmap = matplotlib.cm.RdBu_r,
+                        latlon = True,
+                        lw = 2,
+                        edgecolor = 'gray',
+                        vmin = -3,
+                        vmax = 3,
                         )
     cbar1 = m.colorbar(celsius, location = 'right', label = 'Temperature in $^\circ $C')
     cbar2 = m.colorbar(fahr, location = 'bottom', label = 'Temperature in $^\circ $F')
-    #ax1 = fig.add_axes([.8, .15, 0.05, .7] )
-    #cbar2 = matplotlib.colorbar.ColorbarBase(ax1, cmap=cmap, norm = norm, orientation = 'vertical')
-    
-    lon = x[c.argmin()]
-    lat = y[c.argmin()]
+
+    lon = x[np.nanargmin(c)]
+    lat = y[np.nanargmin(c)]
     a,b = m(lon,lat)
     plt.text(a,b, '%2.1f'%c.min(),
-             ha = 'center', 
+             ha = 'center',
              va = 'bottom',
-             fontsize=16, 
-             #fontweight='bold',
+             fontsize=18,           #fontweight='bold',
              color = 'k')
-    
-    lon = x[c.argmax()]
-    lat = y[c.argmax()]
-    a,b = m(lon,lat)
-    plt.text(a,b, '%2.1f'%c.max(), 
-             ha = 'center', 
-             va = 'bottom',
-             fontsize=18, 
-             #fontweight='bold',
-             color = 'k')
-    
-    plt.title('Mean Temperature %s'%name)
 
+    lon = x[np.nanargmax(c)]
+    lat = y[np.nanargmax(c)]
+    a,b = m(lon,lat)
+    plt.text(a,b, '%2.1f'%c.max(),
+             ha = 'center',
+             va = 'bottom',
+             fontsize=18,
+             #fontweight='bold',
+             color = 'k')
+    plt.text(0, 0.1,'$\mu = %2.2f$'%c.mean(), fontsize=18, ha='left', va='top', 
+    transform=ax.transAxes)
+
+    plt.text(0, 0.05,'$\sigma = %2.2f$'%c.std(), fontsize=18, ha='left', va='top', 
+    transform=ax.transAxes)
+    plt.title('Mean Temperature %s'%name)
     filename = './plots/meantempmap%s.eps'%name
     plt.savefig(filename, format = 'eps', dpi = 600)
 
 # function draws plots of diurnal data given a pandas dataframe that has an 'hour' column added to it 
 # with optional 2nd category to sort by 
-def diurnalplots(diurnalDF, meta, sorttype, sorttype2=0, option2=0):
+def diurnalplots(diurnalDF, meta, sorttype, sorttype2=0, option2=0, name = ''):
         # define dictionaries of options and titles
         options = {'landcoverclass': ['impervious', 'grass', 'dirt'],
                    'sunorshade': ['sun', 'partial', 'shade'],
@@ -257,7 +260,7 @@ def diurnalplots(diurnalDF, meta, sorttype, sorttype2=0, option2=0):
                 lab = '%s, %s/%s sensors (%2.1f %%)'%(option, index.shape[0], meta.sensornumber.shape[0], index.shape[0]/float(meta.sensornumber.shape[0])*100 )
                 plt.subplot(1,2,1)
                 diurnalDF.set_index("hour").groupby(level=0).mean()[index].mean(axis=1).plot(linewidth = 3,
-                                                                                                 yerr= diurnalDF.set_index("hour").groupby(level=0).mean()[index].var(axis=1),
+                                                                                                 yerr= diurnalDF.set_index("hour").groupby(level=0).mean()[index].std(axis=1),
                                                                                                  label = lab)
 
                 plt.text(15.5, diurnalDF.set_index("hour").groupby(level=0).mean()[index].mean(axis=1).max(),
@@ -293,7 +296,7 @@ def diurnalplots(diurnalDF, meta, sorttype, sorttype2=0, option2=0):
         plt.legend(bbox_to_anchor = (.5, -.28),
                     loc=8,
                    borderaxespad=0.)
-        plt.ylim([18,32])
+        #plt.ylim([18,32])
         
         plt.subplot(1,2,2)
         lgd = plt.legend(#[options[sorttype]], 
@@ -301,7 +304,7 @@ def diurnalplots(diurnalDF, meta, sorttype, sorttype2=0, option2=0):
                     loc=8,
                    borderaxespad=0.)        
         #matplotlib.rcParams.update({'font.size': 22})
-        filename = './plots/diurnal%s%s%s.eps'%(sorttype,sorttype2, option2)
+        filename = './plots/diurnal%s%s%s%s.eps'%(sorttype,sorttype2, option2,name)
         plt.savefig(filename, format = 'eps', dpi = 600, 
                     bbox_extra_artists=(lgd,), bbox_inches='tight')
         plt.tight_layout
@@ -337,7 +340,7 @@ def diurnalplotsgeneral(diurnalDF,meta, parks, filename):
                 lab = '%s, %s/%s sensors (%2.1f %%)'%(key, index.shape[0], meta.sensornumber.shape[0], index.shape[0]/float(meta.sensornumber.shape[0])*100 )
                 plt.subplot(1,2,1)
                 diurnalDF.set_index("hour").groupby(level=0).mean()[index].mean(axis=1).plot(linewidth = 3,
-                                                                                                 yerr= diurnalDF.set_index("hour").groupby(level=0).mean()[index].var(axis=1),
+                                                                                                 yerr= diurnalDF.set_index("hour").groupby(level=0).mean()[index].std(axis=1),
                                                                                                  label = lab)
 
                 plt.text(15.5, diurnalDF.set_index("hour").groupby(level=0).mean()[index].mean(axis=1).max(),
@@ -374,7 +377,7 @@ def diurnalplotsgeneral(diurnalDF,meta, parks, filename):
         plt.legend(bbox_to_anchor = (.5, -.28),
                     loc=8,
                    borderaxespad=0.)
-        plt.ylim([18,32])
+        #plt.ylim([18,32])
         
         plt.subplot(1,2,2)
         lgd = plt.legend(#[options[sorttype]], 
@@ -386,4 +389,4 @@ def diurnalplotsgeneral(diurnalDF,meta, parks, filename):
         plt.savefig(filename, format = 'eps', dpi = 600, 
                     bbox_extra_artists=(lgd,), bbox_inches='tight')
         plt.show()
-        
+	return fig    
