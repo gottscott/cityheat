@@ -1,7 +1,22 @@
 # Data # 
 ###################
 *.csv
+*.pyc
+*.eps
+*.tif
+*.tiff
+*.TIF
+*.sdb
+*.dbx
+*.shp
+*.shx
 
+
+# Python/iPython specific # 
+###################
+*.py.*
+.ipynb_checkpoints/*
+*.npy
 
 # Compiled source #
 ###################
