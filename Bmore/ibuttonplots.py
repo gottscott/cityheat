@@ -214,9 +214,9 @@ def mapmean(tempDF, meta, name = ''):
 # with optional 2nd category to sort by 
 def diurnalplots(tempDF, meta, sorttype, sorttype2=0, option2=0):
         # define dictionaries of options and titles
-        options = {'landcoverclass': ['impervious', 'grass', 'dirt'],
+        options = {'landcoverclass': ['impervious', 'grass', 'soil'],#'dirt'],
                    'sunorshade': ['sun', 'partial', 'shade'],
-                   'attachment': ['metal', 'deadwood', 'tree']}
+                   'attachment': ['metal', 'wood', 'tree']}
 
         titles = {'landcoverclass': 'Land Cover Class',
                    'sunorshade': 'Shadiness',
@@ -292,7 +292,7 @@ def diurnalplots(tempDF, meta, sorttype, sorttype2=0, option2=0):
         plt.legend(bbox_to_anchor = (.5, -.28),
                     loc=8,
                    borderaxespad=0.)
-        plt.ylim([18,32])
+        plt.ylim([10,35])
         
         plt.subplot(1,2,2)
         lgd = plt.legend(#[options[sorttype]], 
