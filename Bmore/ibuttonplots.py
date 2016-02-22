@@ -149,6 +149,7 @@ def mapmean(tempDF, meta, name = ''):
                 epsg=3857
                 )
     wms_server = "http://osm.woc.noaa.gov/mapcache" 
+#    m.wmsimage(wms_server, layers = ["osm"], verbose = True)
     #define the color map 
     cmap = matplotlib.cm.RdBu_r
     #bounds = np.linspace(round((np.nanmean(c)-3)*9/5.+32),round((np.nanmean(c)+3)*9/5.+32),13)
@@ -211,7 +212,7 @@ def mapmean(tempDF, meta, name = ''):
 
 # function draws plots of diurnal data given a pandas dataframe that has an 'hour' column added to it 
 # with optional 2nd category to sort by 
-def diurnalplots(diurnalDF, meta, sorttype, sorttype2=0, option2=0):
+def diurnalplots(tempDF, meta, sorttype, sorttype2=0, option2=0):
         # define dictionaries of options and titles
         options = {'landcoverclass': ['impervious', 'grass', 'dirt'],
                    'sunorshade': ['sun', 'partial', 'shade'],
@@ -254,16 +255,16 @@ def diurnalplots(diurnalDF, meta, sorttype, sorttype2=0, option2=0):
             if index.shape[0] >0 :
                 lab = '%s, %s/%s sensors (%2.1f %%)'%(option, index.shape[0], meta.sensornumber.shape[0], index.shape[0]/float(meta.sensornumber.shape[0])*100 )
                 plt.subplot(1,2,1)
-                diurnalDF.set_index("hour").groupby(level=0).mean()[index].mean(axis=1).plot(linewidth = 3,
-                                                                                                 yerr= diurnalDF.set_index("hour").groupby(level=0).mean()[index].var(axis=1),
-                                                                                                 label = lab)
+ 		tempDF.groupby(tempDF.index.hour).mean()[index].mean(axis=1).plot(linewidth = 3,              
+                	yerr= tempDF.groupby(tempDF.index.hour).mean()[index].var(axis=1),
+                        label = lab)
 
-                plt.text(15.5, diurnalDF.set_index("hour").groupby(level=0).mean()[index].mean(axis=1).max(),
-                 '%2.1f'%diurnalDF.set_index("hour").groupby(level=0).mean()[index].mean(axis=1).max(),
+                plt.text(15.5, tempDF.groupby(tempDF.index.hour).mean()[index].mean(axis=1).max(),
+                '%2.1f'%tempDF.groupby(tempDF.index.hour).mean()[index].mean(axis=1).max(),
                  bbox=dict(facecolor='white', edgecolor = '#636363')
                  )
-                plt.text(5.5, diurnalDF.set_index("hour").groupby(level=0).mean()[index].mean(axis=1).min(),
-                 '%2.1f'%diurnalDF.set_index("hour").groupby(level=0).mean()[index].mean(axis=1).min(),
+                plt.text(5.5, tempDF.groupby(tempDF.index.hour).mean()[index].mean(axis=1).min(),
+                 '%2.1f'%tempDF.groupby(tempDF.index.hour).mean()[index].mean(axis=1).min(),
                  bbox=dict(facecolor='white', edgecolor = '#636363')
                  )
                 
@@ -334,16 +335,16 @@ def diurnalplotsgeneral(diurnalDF,meta, parks, filename):
             if index.shape[0] >0 :
                 lab = '%s, %s/%s sensors (%2.1f %%)'%(key, index.shape[0], meta.sensornumber.shape[0], index.shape[0]/float(meta.sensornumber.shape[0])*100 )
                 plt.subplot(1,2,1)
-                diurnalDF.set_index("hour").groupby(level=0).mean()[index].mean(axis=1).plot(linewidth = 3,
-                                                                                                 yerr= diurnalDF.set_index("hour").groupby(level=0).mean()[index].var(axis=1),
+                tempDF.groupby(tempDF.index.hour).mean()[index].mean(axis=1).plot(linewidth = 3,
+                                                                                                 yerr= tempDF.groupby(tempDF.index.hour).mean()[index].var(axis=1),
                                                                                                  label = lab)
 
-                plt.text(15.5, diurnalDF.set_index("hour").groupby(level=0).mean()[index].mean(axis=1).max(),
-                 '%2.1f'%diurnalDF.set_index("hour").groupby(level=0).mean()[index].mean(axis=1).max(),
+                plt.text(15.5, tempDF.groupby(tempDF.index.hour).mean()[index].mean(axis=1).max(),
+                 '%2.1f'%tempDF.groupby(tempDF.index.hour).mean()[index].mean(axis=1).max(),
                  bbox=dict(facecolor='white', edgecolor = '#636363')
                  )
-                plt.text(5.5, diurnalDF.set_index("hour").groupby(level=0).mean()[index].mean(axis=1).min(),
-                 '%2.1f'%diurnalDF.set_index("hour").groupby(level=0).mean()[index].mean(axis=1).min(),
+                plt.text(5.5, tempDF.groupby(tempDF.index.hour).mean()[index].mean(axis=1).min(),
+                 '%2.1f'%tempDF.groupby(tempDF.index.hour).mean()[index].mean(axis=1).min(),
                  bbox=dict(facecolor='white', edgecolor = '#636363')
                  )
                 
