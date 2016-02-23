@@ -48,9 +48,9 @@ def histPlot(tempDF, title='Histogram of Temperature'):
 
 def timeseriesplots(tempDF,meta, sorttype, sorttype2=0, option2=0):
         # define dictionaries of options and titles
-        options = {'landcoverclass': ['impervious', 'grass', 'dirt'],
+        options = {'landcoverclass': ['impervious', 'grass', 'soil'],#'dirt'],
                    'sunorshade': ['sun', 'partial', 'shade'],
-                   'attachment': ['metal', 'deadwood', 'tree']}
+                   'attachment': ['metal', 'wood', 'tree']}
 
         titles = {'landcoverclass': 'Land Cover Class',
                    'sunorshade': 'Shadiness',
