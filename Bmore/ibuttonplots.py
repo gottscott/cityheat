@@ -256,7 +256,7 @@ def diurnalplots(tempDF, meta, sorttype, sorttype2=0, option2=0):
                 lab = '%s, %s/%s sensors (%2.1f %%)'%(option, index.shape[0], meta.sensornumber.shape[0], index.shape[0]/float(meta.sensornumber.shape[0])*100 )
                 plt.subplot(1,2,1)
  		tempDF.groupby(tempDF.index.hour).mean()[index].mean(axis=1).plot(linewidth = 3,              
-                	yerr= tempDF.groupby(tempDF.index.hour).mean()[index].var(axis=1),
+                	yerr= tempDF.groupby(tempDF.index.hour).mean()[index].std(axis=1),
                         label = lab)
 
                 plt.text(15.5, tempDF.groupby(tempDF.index.hour).mean()[index].mean(axis=1).max(),
@@ -336,7 +336,7 @@ def diurnalplotsgeneral(diurnalDF,meta, parks, filename):
                 lab = '%s, %s/%s sensors (%2.1f %%)'%(key, index.shape[0], meta.sensornumber.shape[0], index.shape[0]/float(meta.sensornumber.shape[0])*100 )
                 plt.subplot(1,2,1)
                 tempDF.groupby(tempDF.index.hour).mean()[index].mean(axis=1).plot(linewidth = 3,
-                                                                                                 yerr= tempDF.groupby(tempDF.index.hour).mean()[index].var(axis=1),
+                                                                                                 yerr= tempDF.groupby(tempDF.index.hour).mean()[index].std(axis=1),
                                                                                                  label = lab)
 
                 plt.text(15.5, tempDF.groupby(tempDF.index.hour).mean()[index].mean(axis=1).max(),
