@@ -309,7 +309,7 @@ def diurnalplots(tempDF, meta, sorttype, sorttype2=0, option2=0):
 # function draws plots of diurnal data given a pandas dataframe that has an 'hour' column added to it 
 # with optional 2nd category to sort by 
 
-def diurnalplotsgeneral(diurnalDF,meta, parks, filename):
+def diurnalplotsgeneral(tempDF,meta, parks, filename):
 
         fig  = plt.figure(figsize=(30, 12))
         plt.subplot(1,2,2)
