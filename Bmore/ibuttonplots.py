@@ -47,7 +47,9 @@ def histPlot(tempDF, title='Histogram of Temperature'):
 # with optional 2nd category to sort by 
 
 def timeseriesplots(tempDF,meta, sorttype, sorttype2=0, option2=0):
-        # define dictionaries of options and titles
+        import cartopy.crs as ccrs
+	from cartopy.io.img_tiles import MapQuestOSM
+	# define dictionaries of options and titles
         options = {'landcoverclass': ['impervious', 'grass', 'soil'],#'dirt'],
                    'sunorshade': ['sun', 'partial', 'shade'],
                    'attachment': ['metal', 'wood', 'tree']}
@@ -57,19 +59,14 @@ def timeseriesplots(tempDF,meta, sorttype, sorttype2=0, option2=0):
                    'attachment': 'Attachment'}
         fig  = plt.figure(figsize=(30, 12))
         plt.subplot(1,2,2)
-        
-        m = Basemap(llcrnrlon=meta['location:Longitude'].min()-.005,
-            llcrnrlat=meta['location:Latitude'].min()-.0005,
-            urcrnrlon=meta['location:Longitude'].max()+.005,
-            urcrnrlat=meta['location:Latitude'].max()+.0005,
-            projection='mill',
-            #projection = 'merc',
-            resolution ='h',
-            #area_thresh=1000.
-            epsg=3857
-            )
-        wms_server = "http://osm.woc.noaa.gov/mapcache" 
-        #m.wmsimage(wms_server, layers = ["osm"], verbose = False)
+        imagery = MapQuestOSM()
+	ax = plt.axes(projection=imagery.crs)
+    
+	ax.set_extent(( meta['location:Longitude'].min()-.005, 
+                   meta['location:Longitude'].max()+.005 , 
+                   meta['location:Latitude'].min()-.005,
+                   meta['location:Latitude'].max()+.005))
+	ax.add_image(imagery, 14) 
         # loop over every curve to draw 
         i = 0
 
@@ -97,11 +94,10 @@ def timeseriesplots(tempDF,meta, sorttype, sorttype2=0, option2=0):
                 y = meta['location:Latitude'][index].values
                 marker_size = 150
                 for j in index:
-                        m.scatter(meta['location:Longitude'][j], meta['location:Latitude'][j], 
+                        plt.scatter(meta['location:Longitude'][j], meta['location:Latitude'][j], 
                                   s = marker_size, 
                           c = pd.tools.plotting._get_standard_colors(3)[i], 
-                          label = option if j == index[0] else "", 
-                          latlon = True)
+                          label = option if j == index[0] else "", )
                 #plt.hold(True)
                 i = i+1
 
@@ -129,84 +125,58 @@ def timeseriesplots(tempDF,meta, sorttype, sorttype2=0, option2=0):
                     bbox_extra_artists=(lgd,), bbox_inches='tight')
         plt.show()
 
-def mapmean(tempDF, meta, name = ''): 
+def mapmean(tempDF, meta, name = '', option = 0): 
+    import cartopy.crs as ccrs
+    from cartopy.io.img_tiles import MapQuestOSM
     #fig  = plt.figure(figsize=(30, 30))
     x = meta['location:Longitude'].values
     y = meta['location:Latitude'].values
-    c = tempDF.mean(axis=0).values # The colors will show the mean temp at that location
-    marker_size = 150
-    fig = plt.figure(figsize=(10,10))
-    ax = fig.add_axes([0.1,0.1,0.8,0.8])
+    c = tempDF[meta.sensornumber].mean()
+    marker_size = 350 
+    imagery = MapQuestOSM()
+    fig = plt.figure(figsize=[15,15])
+    ax = plt.axes(projection=imagery.crs)
+    
+    ax.set_extent(( meta['location:Longitude'].min()-.005, 
+                   meta['location:Longitude'].max()+.005 , 
+                   meta['location:Latitude'].min()-.005,
+                   meta['location:Latitude'].max()+.005))
+    ax.add_image(imagery, 14)
 
-    m = Basemap(llcrnrlon=meta['location:Longitude'].min()-.005,
-                llcrnrlat=meta['location:Latitude'].min()-.005,
-                urcrnrlon=meta['location:Longitude'].max()+.005,
-                urcrnrlat=meta['location:Latitude'].max()+.005,
-                projection='mill',
-                #projection = 'merc',
-                resolution ='h',
-                #area_thresh=1000.
-                epsg=3857
-                )
-    wms_server = "http://osm.woc.noaa.gov/mapcache" 
-#    m.wmsimage(wms_server, layers = ["osm"], verbose = True)
-    #define the color map 
-    cmap = matplotlib.cm.RdBu_r
-    #bounds = np.linspace(round((np.nanmean(c)-3)*9/5.+32),round((np.nanmean(c)+3)*9/5.+32),13)
-#    norm = matplotlib.colors.BoundaryNorm(bounds, cmap.N)
-#    
-#    fahr = m.scatter(x,y, s = marker_size, c =(c*9./5. + 32.),
-#                     cmap = cmap, 
-#                     norm = norm, 
-#                     #cmap = matplotlib.cm.RdBu_r, 
-#                        latlon = True, 
-#                        lw = 2, 
-#                        edgecolor = 'gray', 
-#                        #vmin = (c.mean()-3)*9/5., 
-#                        #vmax = (c.mean()+3)*9/5.,
-#                        )
-    cmap = matplotlib.cm.YlOrRd #RdBu_r
-    bounds = np.linspace(round(np.nanmean(c))-3,round(np.nanmean(c))+3,7)
+    cmap = matplotlib.cm.OrRd
+    bounds = np.linspace(round((c.mean()-3)),round((c.mean()+3)),13)
     norm = matplotlib.colors.BoundaryNorm(bounds, cmap.N)
+    plotHandle = ax.scatter(x,y,c = c, s = marker_size, transform=ccrs.Geodetic(), 
+                 cmap = cmap,
+                 norm = norm)
     
-    celsius = m.scatter(x,y, s = marker_size, 
-                        c = c, 
-                        cmap = cmap, 
-                        norm = norm,
-                        #cmap = matplotlib.cm.RdBu_r, 
-                        latlon = True, 
-                        lw = 2, 
-                        edgecolor = 'gray', 
-                        vmin = np.nanmean(c)-3, 
-                        vmax = (np.nanmean(c))+3,
-                        )
-    cbar1 = m.colorbar(celsius, location = 'right', label = 'Temperature in $^\circ $C')
-    #cbar2 = m.colorbar(fahr, location = 'bottom', label = 'Temperature in $^\circ $F')
-    #ax1 = fig.add_axes([.8, .15, 0.05, .7] )
-    #cbar2 = matplotlib.colorbar.ColorbarBase(ax1, cmap=cmap, norm = norm, orientation = 'vertical')
-    
-    lon = x[np.nanargmin(c)]
-    lat = y[np.nanargmin(c)]
-    a,b = m(lon,lat)
-    plt.text(a,b, '%2.1f'%np.nanmin(c),
-             ha = 'center', 
-             va = 'bottom',
-             fontsize=16, 
-             #fontweight='bold',
-             color = 'k')
-    
+    if option ==0 : 
+        cbar1 = plt.colorbar(plotHandle, label = 'Temperature in $^\circ $C')
+    else : 
+        cbar1 = plt.colorbar(plotHandle, label = option)
+
     lon = x[np.nanargmax(c)]
     lat = y[np.nanargmax(c)]
-    a,b = m(lon,lat)
-    plt.text(a,b, '%2.1f'%np.nanmax(c), 
-             ha = 'center', 
-             va = 'bottom',
-             fontsize=18, 
-             #fontweight='bold',
-             color = 'k')
+    at_x, at_y = ax.projection.transform_point(lon, lat,
+                                               src_crs=ccrs.Geodetic())
+    plt.annotate(
+        '%2.1f'%np.nanmax(c.values), xy=(at_x, at_y), #xytext=(30, 20), textcoords='offset points',
+        color='black', backgroundcolor='none', size=22,
+        )
+
+    lon = x[np.nanargmin(c)]
+    lat = y[np.nanargmin(c)]
+    at_x, at_y = ax.projection.transform_point(lon, lat,
+                                               src_crs=ccrs.Geodetic())
+    plt.annotate(
+        '%2.1f'%np.nanmin(c.values), xy=(at_x, at_y), #xytext=(30, 20), textcoords='offset points',
+        color='black', size = 22, backgroundcolor='none')
+
+    plt.annotate(
+        '$\mu = $ %2.1f, $\sigma = $ %2.1f'%(np.nanmean(c.values), np.nanstd(c.values)), (0.01,0.01), xycoords ='axes fraction', #xytext=(30, 20), textcoords='offset points',
+        color='black', size = 22, backgroundcolor='none')
     
     plt.title('Mean Temperature %s'%name)
-
     filename = './plots/meantempmap%s.eps'%name
     plt.savefig(filename, format = 'eps', dpi = 600)
 
@@ -235,7 +205,7 @@ def diurnalplots(tempDF, meta, sorttype, sorttype2=0, option2=0):
             resolution ='h',
             #area_thresh=1000.
             epsg=3857
-            )
+         )   
         wms_server = "http://osm.woc.noaa.gov/mapcache" 
         #m.wmsimage(wms_server, layers = ["osm"], verbose = False)
         # loop over every curve to draw 
