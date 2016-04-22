@@ -1,4 +1,4 @@
-s functions
+#s functions
 from osgeo import ogr, osr
 import os
 from shapely.geometry import Point
@@ -130,42 +130,27 @@ def reproject_shapefile(fname,outfilename,outProjection = "WGS84"):
     inDataSet.Destroy()
     outDataSet.Destroy
 
-def extract_raster_values(X,Y, rasterfile, transform = 'true', calculationProjection = 6347): 
-    # Note: this isn't written to not transform
-    # 
+def extract_raster_values(X,Y, rasterfile  ): 
     # Transform lat/lon values to the raster projection 
-    if transform == 'true':
-        sourceEPSG = 4326
-        #targetEPSG = 6347
-        source = osr.SpatialReference()
-        source.ImportFromEPSG(sourceEPSG)
-        target = osr.SpatialReference()
-        #target =layer.GetGeoTransform()
-        target.ImportFromEPSG(calculationProjection)
+    
+	sourceEPSG = 4326
+	source = osr.SpatialReference()
+	source.ImportFromEPSG(sourceEPSG)
 
-        transform = osr.CoordinateTransformation(source, target)
-    else : 
-        transform = '' # need to figure this out....
-
-    # Read in DEM
+	# Read in raster data to 	
     file = rasterfile #'exportImage'
     layer = gdal.Open(file)
     gt =layer.GetGeoTransform()
     bands = layer.RasterCount
 
-    #wkt = layer.GetProjection()
     inProj = osr.SpatialReference()
     inProj.ImportFromWkt(layer.GetProjection())
-    
-    if inProj != target : 
-        # reproject 
-        coordTrans2 = osr.CoordinateTransformation(inProj, target)
-        layer.Transform(coordTrans2)
+	#target = osr.SpatialReference()
+	#target =layer.GetGeoTransform()
+	#target.ImportFromEPSG(calculationProjection)
 
+	transform = osr.CoordinateTransformation(source, target)
 
-    #point = ogr.CreateGeometryFromWkt("POINT (%s %s)"%(x,y))
-    #Y = meta['location:Latitude']
-    #X = meta['location:Longitude']
     elevation = np.zeros(X.shape[0])
 
     i = 0 
