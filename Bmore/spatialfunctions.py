@@ -7,7 +7,7 @@ import shapely.wkt
 from cartopy.feature import ShapelyFeature
 from cartopy.io.shapereader import Reader
 import gdal
-
+import numpy as np
 # reproject 'Parks_Dissolved.shp'
 def mapmean(tempDF, meta, name = '', option = 0):
     import cartopy.crs as ccrs
@@ -130,36 +130,30 @@ def reproject_shapefile(fname,outfilename,outProjection = "WGS84"):
     inDataSet.Destroy()
     outDataSet.Destroy
 
-def extract_raster_values(X,Y, rasterfile  ): 
+def extract_raster_values(X,Y, rasterfile): 
     # Transform lat/lon values to the raster projection 
-    
-	sourceEPSG = 4326
-	source = osr.SpatialReference()
-	source.ImportFromEPSG(sourceEPSG)
+   # Define the source projection (in this case, lack thereof) 
+    sourceEPSG = 4326
+    sourceProj = osr.SpatialReference()
+    sourceProj.ImportFromEPSG(sourceEPSG)
 
-	# Read in raster data to 	
-    file = rasterfile #'exportImage'
-    layer = gdal.Open(file)
+# Read in raster data to get info on the raster projection 	
+    layer = gdal.Open(rasterfile)
     gt =layer.GetGeoTransform()
     bands = layer.RasterCount
 
-    inProj = osr.SpatialReference()
-    inProj.ImportFromWkt(layer.GetProjection())
-	#target = osr.SpatialReference()
-	#target =layer.GetGeoTransform()
-	#target.ImportFromEPSG(calculationProjection)
-
-	transform = osr.CoordinateTransformation(source, target)
+    rasterProj = osr.SpatialReference()
+    rasterProj.ImportFromWkt(layer.GetProjection())
+    transform = osr.CoordinateTransformation(sourceProj, rasterProj)
 
     elevation = np.zeros(X.shape[0])
-
     i = 0 
     for x,y in zip(X,Y): 
         if ~np.isnan(x) & ~np.isnan(y): 
             point = ogr.Geometry(ogr.wkbPoint)
             point.AddPoint(x,y)
-            point.Transform(transform)
-            #print point.ExportToWkt()
+        # reproject the lat/lon point to the projection of the raster data
+#            point.Transform(transform)
 
             x = point.GetPoints()[0][0]
             y = point.GetPoints()[0][1]
