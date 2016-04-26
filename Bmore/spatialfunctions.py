@@ -106,6 +106,7 @@ def reproject_shapefile(fname,outfilename,outProjection = "WGS84"):
         geom = inFeature.GetGeometryRef()
         # reproject the geometry
         geom.Transform(coordTrans)
+        #geom.TransformTo(outSpatialRef)
         # create a new feature
         outFeature = ogr.Feature(outLayerDefn)
         # set the geometry and attribute
@@ -130,14 +131,13 @@ def reproject_shapefile(fname,outfilename,outProjection = "WGS84"):
     inDataSet.Destroy()
     outDataSet.Destroy
 
-def extract_raster_values(X,Y, rasterfile): 
-    # Transform lat/lon values to the raster projection 
-   # Define the source projection (in this case, lack thereof) 
+
+def extract_raster_values(X,Y, rasterfile,x_radius =1, y_radius=1, how = 'none'):
     sourceEPSG = 4326
     sourceProj = osr.SpatialReference()
     sourceProj.ImportFromEPSG(sourceEPSG)
 
-# Read in raster data to get info on the raster projection 	
+    # Read in raster data to get info on the raster projection
     layer = gdal.Open(rasterfile)
     gt =layer.GetGeoTransform()
     bands = layer.RasterCount
@@ -147,13 +147,14 @@ def extract_raster_values(X,Y, rasterfile):
     transform = osr.CoordinateTransformation(sourceProj, rasterProj)
 
     elevation = np.zeros(X.shape[0])
-    i = 0 
-    for x,y in zip(X,Y): 
-        if ~np.isnan(x) & ~np.isnan(y): 
+    src = layer.GetRasterBand(1)
+    i = 0
+    for x,y in zip(X,Y):
+        if ~np.isnan(x) & ~np.isnan(y):
             point = ogr.Geometry(ogr.wkbPoint)
             point.AddPoint(x,y)
         # reproject the lat/lon point to the projection of the raster data
-#            point.Transform(transform)
+            point.Transform(transform)
 
             x = point.GetPoints()[0][0]
             y = point.GetPoints()[0][1]
@@ -161,11 +162,21 @@ def extract_raster_values(X,Y, rasterfile):
             rasterx = int((x - gt[0]) / gt[1])
             rastery = int((y - gt[3]) / gt[5])
 
-            elevation[i] = layer.GetRasterBand(1).ReadAsArray(rasterx,rastery, 1, 1) 
-            #print layer.GetRasterBand(1).ReadAsArray(rasterx,rastery, 1, 1) 
+            data = src.ReadAsArray(rasterx,rastery, win_xsize=x_radius, win_ysize=y_radius)
+            if data.shape == (1,1) : 
+                elevation[i] = data
+            elif how == 'mean' : # mean of raster data, eg, average number of trees for a given buffer
+                elevation[i] = data.mean()
+            elif how == 'sum' : # total number of raster data, eg, total number of trees
+                elevation[i] = data.sum()
+            elif how == 'density' : # compute the density of raster data, ie, tree canopy cover
+                area = x_radius*y_radius
+                elevation[i] = data.sum()/area
+            #print layer.GetRasterBand(1).ReadAsArray(rasterx,rastery, 1, 1)
         else:
             print 'missing data at ', i
         i = i+1
+
     return elevation
 
 def compute_distance_to_feature(X,Y,feature_file, feature_name = 'none', calculationProjection = 6347):
