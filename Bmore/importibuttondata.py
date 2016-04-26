@@ -8,7 +8,7 @@ import os
 import pandas as pd
 import matplotlib 
 import matplotlib.pylab as pylab
-from mpl_toolkits.basemap import Basemap
+#from mpl_toolkits.basemap import Basemap
 pylab.rcParams['figure.figsize'] = 12, 8
 pd.options.display.mpl_style = 'default'
 get_ipython().magic(u'matplotlib inline')
@@ -58,12 +58,12 @@ def importdata(files,meta) :
 	#tempDF = pd.concat(frames, axis =1).resample('H').dropna()
 	meta = meta.loc[np.intersect1d(tempDF.columns.values, meta.sensornumber.values)]
 
-	clim = tempDF.mean(axis=1) # the temperature 'climatology'
-	anomaly = tempDF - np.tile(clim[:,np.newaxis], (1, tempDF.shape[1])) # the anomaly data
-	anomalyDF = pd.DataFrame(anomaly, tempDF.index, tempDF.columns).sort(axis=1)
+#	clim = tempDF.mean(axis=1) # the temperature 'climatology'
+#	anomaly = tempDF - np.tile(clim[:,np.newaxis], (1, tempDF.shape[1])) # the anomaly data
+#	anomalyDF = pd.DataFrame(anomaly, tempDF.index, tempDF.columns).sort(axis=1)
 
 	meta = meta.loc[np.intersect1d(tempDF.columns.values, meta.sensornumber.values)]
-	return tempDF, anomalyDF, meta
+	return tempDF, meta #anomalyDF, meta
 
 
 
