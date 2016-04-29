@@ -8,6 +8,9 @@ from cartopy.feature import ShapelyFeature
 from cartopy.io.shapereader import Reader
 import gdal
 import numpy as np
+import matplotlib.pyplot as plt
+import cartopy.crs as ccrs
+import matplotlib
 # reproject 'Parks_Dissolved.shp'
 def mapmean(tempDF, meta, name = '', option = 0):
     import cartopy.crs as ccrs
@@ -252,19 +255,23 @@ def map_data(data, lat,lon, shapefiles = 'none'):
         ax.add_image(imagery, 14)
     else: 
         ax = plt.axes(projection=ccrs.PlateCarree()) # note to self:put in UTM 18/19
-
-    ax.set_extent((lon.min()-.05, 
-               lon.max()+.05 , 
-               lat.min(),
-               lat.max()+.05))
+    buffer = .005
+    ax.set_extent((lon.min()-buffer, 
+               lon.max()+ buffer, 
+               lat.min()-buffer,
+               lat.max()+buffer))
     
     # if there are shapefiles, read in and display
+    facecolors = ['none', 'green', 'blue']
+    edgecolors = ['black','none','none']
+    i = 0
     if shapefiles != 'none' : 
         for file in shapefiles: 
             shape_feature = ShapelyFeature(Reader(file).geometries(),
-                                ccrs.PlateCarree(), facecolor='none', edgecolor='black')
+                                ccrs.PlateCarree(), 
+                                facecolor=facecolors[i], edgecolor=edgecolors[i], alpha =.8) #'black')
             ax.add_feature(shape_feature)
-    
+            i = i+1
     # define colormap
     cmap = matplotlib.cm.OrRd
     bounds = np.linspace(round((data.mean()-2*data.std())),round((data.mean()+2*data.std())),13)
@@ -272,8 +279,8 @@ def map_data(data, lat,lon, shapefiles = 'none'):
     # plot
     plotHandle = ax.scatter(lon,lat,c= data, s = 150, transform=ccrs.Geodetic(), 
                  cmap = cmap,
-                 norm = norm)
-    
+                 norm = norm, zorder=3)
+    plt.colorbar(plotHandle, label = 'Temperature in $^\circ$ C') 
     return ax, plotHandle
 
 def band10_toLST(band10): 
