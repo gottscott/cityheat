@@ -9,7 +9,7 @@ import os
 import pandas as pd
 import matplotlib 
 import matplotlib.pylab as pylab
-from mpl_toolkits.basemap import Basemap
+#from mpl_toolkits.basemap import Basemap
 
 def histPlot(tempDF, title='Histogram of Temperature'): 
     fig  = plt.figure(figsize=(12, 6))
@@ -128,10 +128,11 @@ def timeseriesplots(tempDF,meta, sorttype, sorttype2=0, option2=0):
 def mapmean(tempDF, meta, name = '', option = 0): 
     import cartopy.crs as ccrs
     from cartopy.io.img_tiles import MapQuestOSM
+    from mpl_toolkits.axes_grid1 import make_axes_locatable
     #fig  = plt.figure(figsize=(30, 30))
     x = meta['location:Longitude'].values
     y = meta['location:Latitude'].values
-    c = tempDF[meta.sensornumber].mean()
+    c = tempDF[meta.index].mean()
     marker_size = 350 
     imagery = MapQuestOSM()
     fig = plt.figure(figsize=[15,15])
