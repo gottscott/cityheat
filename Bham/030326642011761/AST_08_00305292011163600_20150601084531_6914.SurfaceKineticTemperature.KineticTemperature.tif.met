@@ -1,0 +1,352 @@
+
+GROUP                  = INVENTORYMETADATA
+  GROUPTYPE            = MASTERGROUP
+
+  GROUP                  = COLLECTIONDESCRIPTIONCLASS
+
+    OBJECT                 = SHORTNAME
+      NUM_VAL              = 1
+      VALUE                = "AST_08"
+    END_OBJECT             = SHORTNAME
+
+    OBJECT                 = VERSIONID
+      NUM_VAL              = 1
+      VALUE                = "NOT SET"
+    END_OBJECT             = VERSIONID
+
+  END_GROUP              = COLLECTIONDESCRIPTIONCLASS
+
+  GROUP                  = ECSDATAGRANULE
+
+    OBJECT                 = LOCALGRANULEID
+      NUM_VAL              = 1
+      VALUE                = "AST_08_00305292011163600_20150601084531_6914.SurfaceKineticTemperature.KineticTemperature.tif"
+    END_OBJECT             = LOCALGRANULEID
+
+    OBJECT                 = PRODUCTIONDATETIME
+      NUM_VAL              = 1
+      VALUE                = "2015-06-01T13:48:07.000Z"
+    END_OBJECT             = PRODUCTIONDATETIME
+
+  END_GROUP              = ECSDATAGRANULE
+
+  GROUP                  = PGEVERSIONCLASS
+
+    OBJECT                 = PGEVERSION
+      NUM_VAL              = 1
+      VALUE                = "3.2"
+    END_OBJECT             = PGEVERSION
+
+  END_GROUP              = PGEVERSIONCLASS
+
+  GROUP                  = SINGLEDATETIME
+
+    OBJECT                 = TIMEOFDAY
+      NUM_VAL              = 1
+      VALUE                = "16:36:00.55600Z"
+    END_OBJECT             = TIMEOFDAY
+
+    OBJECT                 = CALENDARDATE
+      NUM_VAL              = 1
+      VALUE                = "2011-05-29"
+    END_OBJECT             = CALENDARDATE
+
+  END_GROUP              = SINGLEDATETIME
+
+  GROUP                  = RANGEDATETIME
+
+    OBJECT                 = RANGEBEGINNINGTIME
+      NUM_VAL              = 1
+      VALUE                = "NOT SET"
+    END_OBJECT             = RANGEBEGINNINGTIME
+
+    OBJECT                 = RANGEBEGINNINGDATE
+      NUM_VAL              = 1
+      VALUE                = "NOT SET"
+    END_OBJECT             = RANGEBEGINNINGDATE
+
+    OBJECT                 = RANGEENDINGTIME
+      NUM_VAL              = 1
+      VALUE                = "NOT SET"
+    END_OBJECT             = RANGEENDINGTIME
+
+    OBJECT                 = RANGEENDINGDATE
+      NUM_VAL              = 1
+      VALUE                = "NOT SET"
+    END_OBJECT             = RANGEENDINGDATE
+
+  END_GROUP              = RANGEDATETIME
+
+  GROUP                  = SPATIALDOMAINCONTAINER
+
+    GROUP                  = HORIZONTALSPATIALDOMAINCONTAINER
+
+      GROUP                  = BOUNDINGRECTANGLE
+
+        OBJECT                 = WESTBOUNDINGCOORDINATE
+          NUM_VAL              = 1
+          VALIDRULE            = "Range(-180.0,+180.0)"
+          VALUE                = -87.0517052855497
+        END_OBJECT             = WESTBOUNDINGCOORDINATE
+
+        OBJECT                 = NORTHBOUNDINGCOORDINATE
+          NUM_VAL              = 1
+          VALIDRULE            = "Range(-90.0,+90.0)"
+          VALUE                = 34.0333104707546
+        END_OBJECT             = NORTHBOUNDINGCOORDINATE
+
+        OBJECT                 = EASTBOUNDINGCOORDINATE
+          NUM_VAL              = 1
+          VALIDRULE            = "Range(-180.0,+180.0)"
+          VALUE                = -86.1435408826928
+        END_OBJECT             = EASTBOUNDINGCOORDINATE
+
+        OBJECT                 = SOUTHBOUNDINGCOORDINATE
+          NUM_VAL              = 1
+          VALIDRULE            = "Range(-90.0,+90.0)"
+          VALUE                = 33.3606629187008
+        END_OBJECT             = SOUTHBOUNDINGCOORDINATE
+
+      END_GROUP              = BOUNDINGRECTANGLE
+
+      GROUP                  = BOUNDINGBOX
+
+        OBJECT                 = UPPERLEFTCORNERLATITUDE
+          NUM_VAL              = 1
+          VALIDRULE            = "Range(-90.0,+90.0)"
+          VALUE                = 34.0333104707546
+        END_OBJECT             = UPPERLEFTCORNERLATITUDE
+
+        OBJECT                 = UPPERLEFTCORNERLONGITUDE
+          NUM_VAL              = 1
+          VALIDRULE            = "Range(-180.0,+180.0)"
+          VALUE                = -86.9407860455354
+        END_OBJECT             = UPPERLEFTCORNERLONGITUDE
+
+        OBJECT                 = UPPERRIGHTCORNERLATITUDE
+          NUM_VAL              = 1
+          VALIDRULE            = "Range(-90.0,+90.0)"
+          VALUE                = 33.9205168422735
+        END_OBJECT             = UPPERRIGHTCORNERLATITUDE
+
+        OBJECT                 = UPPERRIGHTCORNERLONGITUDE
+          NUM_VAL              = 1
+          VALIDRULE            = "Range(-180.0,+180.0)"
+          VALUE                = -86.1435408826928
+        END_OBJECT             = UPPERRIGHTCORNERLONGITUDE
+
+        OBJECT                 = LOWERLEFTCORNERLATITUDE
+          NUM_VAL              = 1
+          VALIDRULE            = "Range(-90.0,+90.0)"
+          VALUE                = 33.4727003835251
+        END_OBJECT             = LOWERLEFTCORNERLATITUDE
+
+        OBJECT                 = LOWERLEFTCORNERLONGITUDE
+          NUM_VAL              = 1
+          VALIDRULE            = "Range(-180.0,+180.0)"
+          VALUE                = -87.0517052855497
+        END_OBJECT             = LOWERLEFTCORNERLONGITUDE
+
+        OBJECT                 = LOWERRIGHTCORNERLATITUDE
+          NUM_VAL              = 1
+          VALIDRULE            = "Range(-90.0,+90.0)"
+          VALUE                = 33.3606629187008
+        END_OBJECT             = LOWERRIGHTCORNERLATITUDE
+
+        OBJECT                 = LOWERRIGHTCORNERLONGITUDE
+          NUM_VAL              = 1
+          VALIDRULE            = "Range(-180.0,+180.0)"
+          VALUE                = -86.2594552942419
+        END_OBJECT             = LOWERRIGHTCORNERLONGITUDE
+
+        OBJECT                 = ALLCORNERCOORDINATEUNITS
+          NUM_VAL              = 1
+          VALUE                = "Decimal Degrees"
+        END_OBJECT             = ALLCORNERCOORDINATEUNITS
+
+      END_GROUP              = BOUNDINGBOX
+
+    END_GROUP              = HORIZONTALSPATIALDOMAINCONTAINER
+
+  END_GROUP              = SPATIALDOMAINCONTAINER
+
+  GROUP                  = INPUTGRANULE
+
+    OBJECT                 = INPUTPOINTER
+      NUM_VAL              = 1
+      VALUE                = "AST_08_00305292011163600_20150601084531_6914.hdf"
+    END_OBJECT             = INPUTPOINTER
+
+  END_GROUP              = INPUTGRANULE
+
+  GROUP                  = ADDITIONALATTRIBUTES
+
+    OBJECT                 = ADDITIONALATTRIBUTESCONTAINER
+      CLASS                = "1"
+
+      OBJECT                 = ADDITIONALATTRIBUTENAME
+        CLASS                = "1"
+        NUM_VAL              = 1
+        VALUE                = "BANDNUMBER"
+      END_OBJECT             = ADDITIONALATTRIBUTENAME
+
+      GROUP                  = INFORMATIONCONTENT
+        CLASS                = "1"
+
+        OBJECT                 = PARAMETERVALUE
+          CLASS                = "1"
+          NUM_VAL              = 1
+          VALUE                = "2"
+        END_OBJECT             = PARAMETERVALUE
+
+      END_GROUP              = INFORMATIONCONTENT
+
+    END_OBJECT             = ADDITIONALATTRIBUTESCONTAINER
+
+  END_GROUP              = ADDITIONALATTRIBUTES
+
+  GROUP                  = POINTINGANGLES
+
+    OBJECT                 = POINTINGANGLESCONTAINER
+      CLASS                = "1"
+
+      OBJECT                 = SENSORNAME
+        CLASS                = "1"
+        NUM_VAL              = 1
+        VALUE                = "VNIR"
+      END_OBJECT             = SENSORNAME
+
+      OBJECT                 = POINTINGANGLE
+        CLASS                = "1"
+        NUM_VAL              = 1
+        VALUE                = -3.884
+      END_OBJECT             = POINTINGANGLE
+
+      OBJECT                 = SETTINGTIMEOFPOINTING
+        CLASS                = "1"
+        NUM_VAL              = 1
+        VALUE                = "2011-05-29T16:35:16Z"
+      END_OBJECT             = SETTINGTIMEOFPOINTING
+
+    END_OBJECT             = POINTINGANGLESCONTAINER
+
+    OBJECT                 = POINTINGANGLESCONTAINER
+      CLASS                = "2"
+
+      OBJECT                 = SENSORNAME
+        CLASS                = "2"
+        NUM_VAL              = 1
+        VALUE                = "SWIR"
+      END_OBJECT             = SENSORNAME
+
+      OBJECT                 = POINTINGANGLE
+        CLASS                = "2"
+        NUM_VAL              = 1
+        VALUE                = -3.79
+      END_OBJECT             = POINTINGANGLE
+
+      OBJECT                 = SETTINGTIMEOFPOINTING
+        CLASS                = "2"
+        NUM_VAL              = 1
+        VALUE                = "2011-05-29T16:35:15Z"
+      END_OBJECT             = SETTINGTIMEOFPOINTING
+
+    END_OBJECT             = POINTINGANGLESCONTAINER
+
+    OBJECT                 = POINTINGANGLESCONTAINER
+      CLASS                = "3"
+
+      OBJECT                 = SENSORNAME
+        CLASS                = "3"
+        NUM_VAL              = 1
+        VALUE                = "TIR"
+      END_OBJECT             = SENSORNAME
+
+      OBJECT                 = POINTINGANGLE
+        CLASS                = "3"
+        NUM_VAL              = 1
+        VALUE                = -3.854
+      END_OBJECT             = POINTINGANGLE
+
+      OBJECT                 = SETTINGTIMEOFPOINTING
+        CLASS                = "3"
+        NUM_VAL              = 1
+        VALUE                = "2011-05-29T16:35:14Z"
+      END_OBJECT             = SETTINGTIMEOFPOINTING
+
+    END_OBJECT             = POINTINGANGLESCONTAINER
+
+  END_GROUP              = POINTINGANGLES
+
+  GROUP                  = PRODUCTSPECIFICMETADATA
+
+    OBJECT                 = MAPORIENTATIONANGLE
+      NUM_VAL              = 1
+      VALUE                = 9.38228423998494
+    END_OBJECT             = MAPORIENTATIONANGLE
+
+    OBJECT                 = SOLAR_AZIMUTH_ANGLE
+      NUM_VAL              = 1
+      VALUE                = 124.134596
+    END_OBJECT             = SOLAR_AZIMUTH_ANGLE
+
+    OBJECT                 = SOLAR_ELEVATION_ANGLE
+      NUM_VAL              = 1
+      VALUE                = 70.909019
+    END_OBJECT             = SOLAR_ELEVATION_ANGLE
+
+  END_GROUP              = PRODUCTSPECIFICMETADATA
+
+  GROUP                  = GRID_INFO
+
+    GROUP                  = GRIDSTRUCTUREINFO
+    END_GROUP              = GRIDSTRUCTUREINFO
+
+  END_GROUP              = GRID_INFO
+
+  GROUP                  = SWATHSTRUCTUREINFO
+
+    OBJECT                 = ALONGTRACKPIXELRESOLUTION
+      NUM_VAL              = 1
+      VALUE                = 90.0
+    END_OBJECT             = ALONGTRACKPIXELRESOLUTION
+
+    OBJECT                 = CROSSTRACKPIXELRESOLUTION
+      NUM_VAL              = 1
+      VALUE                = 90.0
+    END_OBJECT             = CROSSTRACKPIXELRESOLUTION
+
+    OBJECT                 = PIXELRESOLUTIONUNIT
+      NUM_VAL              = 1
+      VALUE                = "Meters"
+    END_OBJECT             = PIXELRESOLUTIONUNIT
+
+    OBJECT                 = NUMBEROFLINES
+      NUM_VAL              = 1
+      VALUE                = 700
+    END_OBJECT             = NUMBEROFLINES
+
+    OBJECT                 = NUMBEROFSAMPLES
+      NUM_VAL              = 1
+      VALUE                = 830
+    END_OBJECT             = NUMBEROFSAMPLES
+
+  END_GROUP              = SWATHSTRUCTUREINFO
+
+  GROUP                  = CLOUDCOVERAGE
+
+    OBJECT                 = QUADRANTCLOUDCOVERAGE
+      NUM_VAL              = 4
+      VALUE                = (0, 0, 0, 0)
+    END_OBJECT             = QUADRANTCLOUDCOVERAGE
+
+    OBJECT                 = SCENECLOUDCOVERAGE
+      NUM_VAL              = 1
+      VALUE                = 0
+    END_OBJECT             = SCENECLOUDCOVERAGE
+
+  END_GROUP              = CLOUDCOVERAGE
+
+END_GROUP              = INVENTORYMETADATA
+
+END
